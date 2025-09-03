@@ -1,5 +1,5 @@
-#include <raylib.h>
 #include "screen.h"
+#include <raylib.h>
 
 int main(void) {
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Particles");
@@ -9,6 +9,7 @@ int main(void) {
   while (!WindowShouldClose()) {
     update();
     BeginDrawing();
+    ClearBackground(RAYWHITE);
     draw();
     EndDrawing();
   }

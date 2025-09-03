@@ -3,10 +3,13 @@
 #include <raylib.h>
 #include <stdlib.h>
 
-const float ACCELERATION = 0.1;
-const float RADIUS = 5;
-const int PARTICLE_COUNT = 1;
-const int FONT_SIZE = 19;
+#define ACCELERATION 0.1f
+#define RADIUS 5.0f
+#define PARTICLE_COUNT 1
+#define FONT_SIZE 19
+#define TITLE "Particle Sim"
+#define DAMPING 0.9f
+
 struct Particle {
   Vector2 position;
   Vector2 velocity;
@@ -27,7 +30,7 @@ void init() {
         .radius = RADIUS,
         .acceleration = {0, 0}};
     particles[i] = particle;
- }
+  }
 }
 
 void update() {
@@ -41,6 +44,7 @@ void update() {
                            mousePos.y - particlePos.y};
       float length =
           sqrt(direction.x * direction.x + direction.y * direction.y);
+
       if (length > 0) {
         particle->acceleration.x = (direction.x / length) * ACCELERATION;
         particle->acceleration.y = (direction.y / length) * ACCELERATION;
@@ -53,21 +57,25 @@ void update() {
     if (particlePos.x >= SCREEN_RIGHT - particle->radius) {
       particle->position.x = SCREEN_RIGHT - particle->radius;
       particle->velocity.x = -particle->velocity.x;
+      particle->velocity.x *= DAMPING;
     }
 
     if (particlePos.x <= SCREEN_LEFT + particle->radius) {
       particle->position.x = SCREEN_LEFT + particle->radius;
       particle->velocity.x = -particle->velocity.x;
+      particle->velocity.x *= DAMPING;
     }
 
     if (particlePos.y <= SCREEN_TOP + particle->radius) {
       particle->position.y = SCREEN_TOP + particle->radius;
       particle->velocity.y = -particle->velocity.y;
+      particle->velocity.y *= DAMPING;
     }
 
     if (particlePos.y >= SCREEN_BOTTOM - particle->radius) {
       particle->position.y = SCREEN_BOTTOM - particle->radius;
       particle->velocity.y = -particle->velocity.y;
+      particle->velocity.y *= DAMPING;
     }
 
     particle->velocity.x += particle->acceleration.x;
@@ -80,8 +88,8 @@ void update() {
 
 void draw() {
   Vector2 mousePos = GetMousePosition();
-  ClearBackground(RAYWHITE);
-  DrawText("Particle Sim", SCREEN_WIDTH / 2, SCREEN_TOP, FONT_SIZE, BLACK);
+  int textWidth = MeasureText(TITLE, FONT_SIZE);
+  DrawText(TITLE, (SCREEN_WIDTH / 2 - textWidth), SCREEN_TOP, FONT_SIZE, BLACK);
   for (int i = 0; i < PARTICLE_COUNT; i++) {
     struct Particle *particle = &particles[i];
     if (IsMouseButtonDown(0)) {
@@ -94,6 +102,4 @@ void draw() {
   }
 }
 
-void cleanup() {
-  free(particles);
-}
+void cleanup() { free(particles); }
