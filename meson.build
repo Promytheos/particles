@@ -6,26 +6,27 @@ project('particles', 'c',
   ]
 )
 
-# Find raylib dependency
 raylib_dep = dependency('raylib', required : true)
 cc = meson.get_compiler('c')
 math_dep = cc.find_library('m', required: false)
-# Source files
+
+common_deps = [raylib_dep, math_dep]
+
 main_src = 'src/main.c'
-# common_src = files(
-#   'src/common.c'
-# )
-# game_sources = files(
-#   'src/games/pong.c',
-#   'src/games/tictactoe.c'
-# )
 
-# All source files
-# all_sources = [main_src, common_src, game_sources]
+# Define all your simulation modules
+simulations = {
+  'particles': 'src/particles.c',
+  # 'boids': 'src/boids.c',
+  # 'gravity': 'src/gravity.c',
+  # Add more as you create them
+}
 
-# Main executable
-executable('particles',
-  sources : main_src,
-  dependencies : [raylib_dep, math_dep],
-  install : true
-)
+# Build an executable for each simulation
+foreach name, impl : simulations
+  executable(name,
+    sources : [main_src, impl],
+    dependencies : common_deps,
+    install : true
+  )
+endforeach
