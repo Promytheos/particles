@@ -6,8 +6,18 @@ int main(void) {
   SetTargetFPS(FPS);
   init();
 
+  bool is_paused = false;
   while (!WindowShouldClose()) {
-    update();
+    if (IsKeyPressed(KEY_R)) {
+      cleanup();
+      init();
+    }
+    if (IsKeyPressed(KEY_P)) {
+      is_paused = !is_paused;
+    }
+    if (!is_paused) {
+      update();
+    }
     BeginDrawing();
     ClearBackground(RAYWHITE);
     draw();

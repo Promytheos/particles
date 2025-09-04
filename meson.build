@@ -18,7 +18,7 @@ main_src = 'src/main.c'
 simulations = {
   'particles': 'src/particles.c',
   # 'boids': 'src/boids.c',
-  # 'gravity': 'src/gravity.c',
+  'gravity': 'src/gravity.c',
   # Add more as you create them
 }
 
