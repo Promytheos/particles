@@ -140,7 +140,7 @@ void update() {
 
 void draw() {
   int textWidth = MeasureText(TITLE, FONT_SIZE);
-  DrawText(TITLE, (SCREEN_WIDTH / 2 - textWidth), SCREEN_TOP, FONT_SIZE, BLACK);
+  DrawText(TITLE, (SCREEN_WIDTH - textWidth) / 2, SCREEN_TOP, FONT_SIZE, BLACK);
   for (int i = 0; i < num_planets; i++) {
     struct Planet *planet = &planets[i];
     DrawCircleV(planet->position, planet->radius, BLACK);

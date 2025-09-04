@@ -89,7 +89,7 @@ void update() {
 void draw() {
   Vector2 mousePos = GetMousePosition();
   int textWidth = MeasureText(TITLE, FONT_SIZE);
-  DrawText(TITLE, (SCREEN_WIDTH / 2 - textWidth), SCREEN_TOP, FONT_SIZE, BLACK);
+  DrawText(TITLE, (SCREEN_WIDTH - textWidth) / 2, SCREEN_TOP, FONT_SIZE, BLACK);
   for (int i = 0; i < PARTICLE_COUNT; i++) {
     struct Particle *particle = &particles[i];
     if (IsMouseButtonDown(0)) {
