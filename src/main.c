@@ -18,10 +18,7 @@ int main(void) {
     if (!is_paused) {
       update();
     }
-    BeginDrawing();
-    ClearBackground(RAYWHITE);
     draw();
-    EndDrawing();
   }
 
   CloseWindow();

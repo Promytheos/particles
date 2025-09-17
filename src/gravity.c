@@ -25,21 +25,28 @@ struct Planet {
   float mass;
   float density;
   Vector2 gravityVector;
+  Color color;
 };
 
 struct Planet *planets;
 int num_planets;
 struct Planet create_planet(float x, float y);
 float getRandomValuef(float min, float max);
+RenderTexture2D target;
 
 void init() {
   planets = malloc(sizeof(struct Planet) * MAX_PLANETS);
   num_planets = STARTING_PLANETS;
 
+  target = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+
   for (int i = 0; i < num_planets; i++) {
-    struct Planet planet =
-        create_planet(getRandomValuef(SCREEN_LEFT, SCREEN_RIGHT),
-                      getRandomValuef(SCREEN_TOP, SCREEN_BOTTOM));
+    struct Planet planet = create_planet(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+    planet.radius = 50.0f;
+    planet.density = 5.0f;
+    planet.color = GREEN;
+    planet.mass = (4.0f / 3.0f) * PI * pow(planet.radius, 3) * planet.density;
+    planet.velocity = Vector2Zero();
 
     planets[i] = planet;
   }
@@ -60,8 +67,8 @@ struct Planet create_planet(float x, float y) {
                           .velocity = {velocityX, velocityY},
                           .density = density,
                           .gravityVector = Vector2Zero(),
-                          .mass =
-                              (4.0f / 3.0f) * PI * pow(radius, 3) * density};
+                          .mass = (4.0f / 3.0f) * PI * pow(radius, 3) * density,
+                          .color = WHITE};
 
   return planet;
 }
@@ -139,15 +146,27 @@ void update() {
 }
 
 void draw() {
-  int textWidth = MeasureText(TITLE, FONT_SIZE);
-  DrawText(TITLE, (SCREEN_WIDTH - textWidth) / 2, SCREEN_TOP, FONT_SIZE, BLACK);
+  BeginTextureMode(target);
+  DrawRectangle(SCREEN_LEFT, SCREEN_TOP, SCREEN_WIDTH, SCREEN_HEIGHT,
+                (Color){0, 0, 0, 5});
   for (int i = 0; i < num_planets; i++) {
     struct Planet *planet = &planets[i];
-    DrawCircleV(planet->position, planet->radius, BLACK);
-    DrawLine(planet->position.x, planet->position.y,
-             planet->position.x + planet->gravityVector.x,
-             planet->position.y + planet->gravityVector.y, GRAY);
+    DrawCircleV(planet->position, planet->radius, planet->color);
   }
+  EndTextureMode();
+  BeginDrawing();
+  ClearBackground(BLACK);
+
+  int textWidth = MeasureText(TITLE, FONT_SIZE);
+  DrawText(TITLE, (SCREEN_WIDTH - textWidth) / 2, SCREEN_TOP, FONT_SIZE, WHITE);
+  DrawTextureRec(target.texture,
+                 (Rectangle){SCREEN_LEFT, SCREEN_TOP, target.texture.width,
+                             -target.texture.height},
+                 (Vector2){0, 0}, WHITE);
+  EndDrawing();
 }
 
-void cleanup() { free(planets); }
+void cleanup() {
+  free(planets);
+  UnloadRenderTexture(target);
+}

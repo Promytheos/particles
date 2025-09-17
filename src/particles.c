@@ -87,6 +87,8 @@ void update() {
 }
 
 void draw() {
+  BeginDrawing();
+  ClearBackground(RAYWHITE);
   Vector2 mousePos = GetMousePosition();
   int textWidth = MeasureText(TITLE, FONT_SIZE);
   DrawText(TITLE, (SCREEN_WIDTH - textWidth) / 2, SCREEN_TOP, FONT_SIZE, BLACK);
@@ -100,6 +102,7 @@ void draw() {
     DrawCircle(particle->position.x, particle->position.y, particle->radius,
                BLACK);
   }
+  EndDrawing();
 }
 
 void cleanup() { free(particles); }
